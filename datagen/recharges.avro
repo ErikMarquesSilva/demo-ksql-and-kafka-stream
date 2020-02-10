@@ -1,0 +1,41 @@
+{
+  "namespace": "streams",
+  "name": "recharge",
+  "type": "record",
+  "fields": [
+    {
+      "name": "amount",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "1000",
+            "1500",
+            "2000",
+            "2500",
+            "3000"
+          ]
+        }
+      }
+    },
+    {
+      "name": "client_id",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "1111",
+            "2222",
+            "3333",
+            "4444",
+            "5555",
+            "6666",
+            "7777",
+            "8888",
+            "9999"
+          ]
+        }
+      }
+    }
+  ]
+}

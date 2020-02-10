@@ -1,0 +1,33 @@
+{
+  "namespace": "streams",
+  "name": "client",
+  "type": "record",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "phone_number",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    }
+  ],
+  "arg.properties": {
+    "options": [
+      {
+        "id": "1111",
+        "phone_number": "1199991111",
+        "name": "Marcos Vieira"
+      },
+      {
+        "id": "2222",
+        "phone_number": "1199992222",
+        "name": "Renato Silva"
+      }
+    ]
+  }
+}
