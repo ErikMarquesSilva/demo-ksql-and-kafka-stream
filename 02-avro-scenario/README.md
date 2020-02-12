@@ -1,41 +1,4 @@
-# POC Kafka Stream/KSQL e Kafka Connect
-
-
-## Startup via Configure Confluent Platform
-
-Reference https://docs.confluent.io/current/quickstart/ce-quickstart.html#ce-quickstart
-
-Confluent local https://docs.confluent.io/current/cli/command-reference/confluent-local/index.html
-
-````
-export CONFLUENT_HOME=<path-to-confluent>
-export PATH=$CONFLUENT_HOME/bin:$PATH
-
-
-curl -L https://cnfl.io/cli | sh -s -- -b /<path-to-cli>
-````
-
-Make sure that \<path-to-cli> is something like: /usr/local/bin
-
-````
-curl -L https://cnfl.io/cli | sh -s -- -b /usr/local/bin
-````
-
-Perhaps is a Confluent bug, but you have to create a file:
-````
-mkdir $HOME/.confluent
-echo '{}' > $HOME/.confluent/config.json
-````
-
-### Start servers
-
-````
-confluent local start ksql-server
-````
-
-## Startup via Docker
-
-Use the docker-compose.yml. Reference https://docs.confluent.io/current/quickstart/ce-docker-quickstart.html#ce-docker-quickstart
+# Scenario with JSON
 
 ## Producing messages
 
@@ -54,7 +17,7 @@ ksql-datagen schema=./datagen/recharges.avro format=avro topic=recharge key=clie
 
 Producing one by one:
 
-````
+```
 kafka-avro-console-producer \
     --broker-list localhost:9092 --topic recharge \
     --property parse.key=true \
@@ -82,11 +45,13 @@ ksql-datagen schema=./datagen/clients.avro format=avro topic=client key=id maxIn
 Producing one by one:
 
 ````
-kafka-avro-console-producer \
-    --broker-list localhost:9092 --topic client \
-    --property value.schema='{"type":"record","name":"client","fields":[{"name":"id","type":"string"}, {"name":"phone_number","type":"string"}, {"name":"name","type":"string"}]}'
+kafka-avro-console-producer --broker-list localhost:9092 --topic client \
+    --property parse.key=true \
+    --property key.schema='{"type":"string"}' \
+    --property key.separator=: \
+    --property value.schema='{"type":"record","name":"KsqlDataSourceSchema","namespace": "io.confluent.ksql.avro_schemas","fields":[{"name":"id","type":"string"}, {"name":"phone_number","type":"string"}, {"name":"name","type":"string"}]}'
 "1111":{"id":"1111", "phone_number":"11988881111", "name":"Marcos Vieira"}
-"2222":{"id":"2222", "phone_number":"11988882222", "name":"Renato Silva"}
+"1111":{"id":"2222", "phone_number":"11988882222", "name":"Renato Silva"}
 ````
 
 ## Streaming
@@ -94,7 +59,7 @@ kafka-avro-console-producer \
 ### KSQL
 
 ````
-CREATE STREAM RECHARGE_WRAPPER WITH (KAFKA_TOPIC='recharge', VALUE_FORMAT='AVRO');
+CREATE STREAM RECHARGE_WRAPPER WITH (KAFKA_TOPIC='recharge', VALUE_FORMAT='AVRO', KEY='client_id');
 
 CREATE TABLE CLIENT_TABLE WITH (KAFKA_TOPIC='client', VALUE_FORMAT='AVRO', KEY='id');
 
@@ -108,14 +73,32 @@ Join Event Stream with KSQL https://docs.confluent.io/current/ksql/docs/develope
 
 KSQL CLI Syntax reference: https://docs.confluent.io/current/ksql/docs/developer-guide/syntax-reference.html
 
-### Kafka Stream
+### Updating messages
 
-KSQL and Kafka Stream https://docs.confluent.io/current/ksql/docs/concepts/ksql-and-kafka-streams.html
+Update topic *recharge* with the follow message:
 
-## Schema Evolution and Compatibility
+````
+"1111":{"value":"300", "client_id":"1111"}
+````
 
-https://docs.confluent.io/current/schema-registry/avro.html
+### Update schema:
 
+````
+kafka-avro-console-producer \
+    --broker-list localhost:9092 --topic recharge \
+    --property parse.key=true \
+    --property key.schema='{"type":"string"}' \
+    --property key.separator=: \
+    --property value.schema='{"type":"record","name":"KsqlDataSourceSchema","namespace": "io.confluent.ksql.avro_schemas","fields":[{"name":"amount","type":"string"}, {"name":"client_id","type":"string"}, {"name":"value","type":"string"}]}'
+"1111":{"value":"300", "client_id":"1111", "amount":"300"}
+````
 
-## Passos para cada solução - o que o dev precisa fazer?
- * Descrever aqui com um pouco mais de detalhes, talvez em desenho, o que precisa ser feito de deploy para colocar no ar a solução Kafka Stream ou KSQL.
+````
+kafka-avro-console-producer \
+    --broker-list localhost:9092 --topic recharge \
+    --property parse.key=true \
+    --property key.schema='{"type":"string"}' \
+    --property key.separator=: \
+    --property value.schema='{"type":"record","name":"KsqlDataSourceSchema","namespace": "io.confluent.ksql.avro_schemas","fields":[{"name":"amount","type":"string"}, {"name":"client_id","type":"string"}, {"name":"value","type":"string","default":"0"}]}'
+"1111":{"value":"300", "client_id":"1111", "amount":"300"}
+````
