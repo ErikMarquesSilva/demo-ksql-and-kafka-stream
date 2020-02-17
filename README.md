@@ -119,3 +119,17 @@ https://docs.confluent.io/current/schema-registry/avro.html
 
 ## Passos para cada solução - o que o dev precisa fazer?
  * Descrever aqui com um pouco mais de detalhes, talvez em desenho, o que precisa ser feito de deploy para colocar no ar a solução Kafka Stream ou KSQL.
+ 
+ 
+
+### Kafka Stream Application
+
+````
+kafka-console-producer --broker-list localhost:9092 --topic recharge --property parse.key=true --property key.separator=:
+````
+
+
+Consume message of KStream
+````
+kafka-console-consumer --bootstrap-server localhost:9092 --topic recharge --from-beginning --group KafkaStreamsTableJoin-process-applicationId
+````

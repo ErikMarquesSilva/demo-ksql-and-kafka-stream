@@ -14,7 +14,7 @@ class KafkaStreamsTableJoin {
     @StreamListener
     @SendTo("output")
     fun process(
-        @Input("recharge") recharge: KStream<Any?, Recharge>,
+        @Input("recharge") recharge: KStream<Any, Any>,
         @Input("client") client: KTable<Any?, Any>
     ): KStream<*, *> {
 
