@@ -2,6 +2,12 @@
 
 ## Producing messages
 
+````
+confluent local start kafka
+````
+
+Start application.
+
 ### Recharge
 
 ````json
@@ -29,6 +35,7 @@ kafka-console-producer --broker-list localhost:9092 --topic input --property par
 }
 ````
 
+
 Producing messages:
 
 ````
@@ -37,31 +44,19 @@ kafka-console-producer --broker-list localhost:9092 --topic inputTable --propert
 2222:{"id":"2222", "phoneNumber":"11988882222", "name":"Renato Silva"}
 ````
 
-
-
 ## Streaming
 
 ### Kafka Stream API
 
-
-
-
-
-
-
-
-
-### Testing
-
-Worked - we need to add value.deserializer no kafka-console-consumer.
-
 ````
-kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic output-topic --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer --property print.key=true
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic output --property print.key=true
 ````
 
+### If return <String, Long> we need to add value.deserializer no kafka-console-consumer.
+
 ````
-kafka-console-producer --broker-list localhost:9092 --topic recharge --property parse.key=true --property key.separator=:
-`````
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic output --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer --property print.key=true
+````
 
 ````java            
 return ((rechargeStream, clientTable) -> rechargeStream

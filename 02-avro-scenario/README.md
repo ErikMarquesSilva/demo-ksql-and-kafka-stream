@@ -13,7 +13,6 @@
 
 ````
 ksql-datagen schema=./datagen/recharges.avro format=avro topic=recharge key=client_id maxInterval=5000 iterations=10000
-kafka-topics
 ````
 
 Producing one by one:

@@ -37,8 +37,6 @@ public class PocKafkaStremWithJsonApplication {
 	public KStream<String, TotalPerClient> handle(@Input("input") KStream<String, Recharge> input
 			, @Input("inputTable") KTable<String, Client> inputTable) {
 
-		final Serde<TotalPerClient> totalPerClientSerde = getTotalPerClientSerde();
-
 		return input
 				.leftJoin(inputTable
 						, (rechage, client) -> new ValuePerClient(client.getName(), Long.valueOf(rechage.getAmount())))
@@ -46,7 +44,7 @@ public class PocKafkaStremWithJsonApplication {
 				.windowedBy(TimeWindows.of(Duration.ofMinutes(1)))
 				.aggregate(() -> new TotalPerClient()
 						, (aggKey, newValue, aggValue) -> new TotalPerClient(newValue.name, newValue.value + aggValue.getTotal())
-						, Materialized.with(Serdes.String(), totalPerClientSerde))
+						, Materialized.with(Serdes.String(), getTotalPerClientSerde()))
 				.toStream()
 				.map((key, value)
 						-> new KeyValue<String, TotalPerClient>(

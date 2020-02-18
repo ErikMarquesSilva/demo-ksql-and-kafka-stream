@@ -1,5 +1,11 @@
 # Scenario with JSON
 
+## Start Confluent Platform - Kafka
+
+````
+confluent local start ksql-server
+````
+
 ## Producing messages
 
 ### Recharge
@@ -9,6 +15,12 @@
     "amount": "1000",
     "client_id": "1111"
 }
+````
+
+Creating topic
+
+````
+kafka-topics --bootstrap-server localhost:9092 --create --topic recharge --replication-factor 1 --partitions 1
 ````
 
 Producing messages
@@ -28,6 +40,13 @@ kafka-console-producer --broker-list localhost:9092 --topic recharge
     "name": "Marcos Vieira"
 }
 ````
+
+Creating topic
+
+````
+kafka-topics --bootstrap-server localhost:9092 --create --topic client --replication-factor 1 --partitions 1
+````
+
 
 Producing messages:
 

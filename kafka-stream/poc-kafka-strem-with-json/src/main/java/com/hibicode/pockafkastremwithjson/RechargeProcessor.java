@@ -9,13 +9,12 @@ import org.springframework.cloud.stream.annotation.Output;
 public interface RechargeProcessor {
 
     @Input
-    KStream<?, ?> input();
+    KStream<String, Recharge> input();
 
     @Input
-    KTable<?, ?> inputTable();
+    KTable<String, Client> inputTable();
 
     @Output
     KStream<String, TotalPerClient> output();
-//    KStream<String, TotalPerClient> output();
 
 }
