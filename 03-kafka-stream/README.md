@@ -37,6 +37,8 @@ kafka-console-producer --broker-list localhost:9092 --topic inputTable --propert
 2222:{"id":"2222", "phoneNumber":"11988882222", "name":"Renato Silva"}
 ````
 
+
+
 ## Streaming
 
 ### Kafka Stream API
