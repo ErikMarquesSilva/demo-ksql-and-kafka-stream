@@ -48,8 +48,9 @@ public class PocKafkaStremWithJsonApplication {
 				.toStream()
 				.map((key, value)
 						-> new KeyValue<String, TotalPerClient>(
-								formatter.format(key.window().startTime()) + " - " + formatter.format(key.window().endTime())
+						formatter.format(key.window().startTime()) + " - " + formatter.format(key.window().endTime())
 						, new TotalPerClient(value.getName(), value.getTotal())));
+	}
 
 //		return input
 //				.leftJoin(inputTable
@@ -62,8 +63,7 @@ public class PocKafkaStremWithJsonApplication {
 //				.toStream()
 //				.map((key, value) -> new KeyValue<>(null, new TotalPerClient(key.key(), value)));
 
-//				.leftJoin(inputTable, (recharge, client) -> recharge.getClientId().equals(client.getId()));
-	}
+//	}
 
 	private Serde<TotalPerClient> getTotalPerClientSerde() {
 		Map<String, Object> serdeProps = new HashMap<>();
